@@ -106,8 +106,7 @@ const GameInput = ({ handleGame, roundCounter, wincount, myinput, counter }) => 
                             </div>
 
                         </div>
-
-
+                        
                         {myinput === 0 ?
                             (<div className='mt-8'>
                                 Your Turn...

@@ -1,47 +1,75 @@
 import React from "react";
 import GokuEyes from "./GokuEyes";
-import chatbubble from './images/bubblechat.png';
-import { useState, useEffect } from 'react';
+import chatbubble from "./images/bubblechat.png";
+import { useState, useEffect } from "react";
 
-import io from 'socket.io-client';
-import Chat from "./Chat";
-import GameManager from "./GameManager";
-import AnotherAnim from "./components/AnotherAnim";
+import io from "socket.io-client";
+// import Chat from "./Chat";
+// import GameManager from "./GameManager";
+import Homepage from "./components/home";
+import Footer from "./components/shared-elements/footer";
 
-import Game from "./Game";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import AnotherAnim from "./components/AnotherAnim";
 
-const socket = io.connect("https://rps-server-backend123.herokuapp.com/");
+// import Game from "./Game";
+
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 function App() {
-  const [isivisible, setIsVisible] = useState(false);
+  const apiUrl = process.env.SOCKET_IO_URL;
+  const socket = io.connect("http://localhost:3002/");
+  useEffect(() => {
+    AOS.init();
+  }, []);
+
+  // const [isivisible, setIsVisible] = useState(false);
 
   return (
-    <div >
-      {/* <div className='bg-[#adadad] text-white p-2 text-center'>
-        <button onClick={() => {
-          setIsVisible(v => !v);
-        }}>
-          Mount 
-        </button>
-      </div> */}
-      <div className="">
-        {/* <Chat socket={socket} /> */}
-        {/* <GokuEyes /> */}
-        {isivisible ? ('') : ''}
-        <GameManager socket={socket} />
+    <BrowserRouter>
+      <Routes>
+        <Route
+          exact
+          path="/"
+          element={
+            <>
+              <main className="bg-[#42ffa7] min-h-screen flex flex-col">
+                <div className="flex-1 flex justify-center container mx-auto items-center  ">
+                  <Homepage socket={socket} />
+                  {apiUrl}
+                </div>
 
-
-
-        {/* <GameManager socket={socket} /> */}
-
-
-      </div>
-      <div className="text-right mt-32 lg:mt-0">
-        by
-        <a href="https://ranishkunwar.com.np/"> Ranish Kunwar</a>
-      </div>
-
-    </div>
+                <Footer />
+              </main>
+            </>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+// <div>
+//       {/* <div className='bg-[#adadad] text-white p-2 text-center'>
+//         <button onClick={() => {
+//           setIsVisible(v => !v);
+//         }}>
+//           Mount
+//         </button>
+//       </div> */}
+//       <div className="">
+//         {/* <Chat socket={socket} /> */}
+//         {/* <GokuEyes /> */}
+//         {/* {isivisible ? "" : ""} */}
+//         <GameManager socket={socket} />
+
+//         {/* <GameManager socket={socket} /> */}
+//       </div>
+//       <div className="text-right mt-32 lg:mt-0">
+//         by
+//         <a href="https://ranishkunwar.com.np/"> Ranish Kunwar</a>
+//       </div>
+//     </div>
 
 export default App;

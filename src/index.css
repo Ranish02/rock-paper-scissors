@@ -1,72 +1,99 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400;500;600;700&family=Press+Start+2P&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-    font-family: Comic Sans MS, Comic Sans;
-    cursor: url('https://img.icons8.com/external-kiranshastry-lineal-color-kiranshastry/512/external-cursor-interface-kiranshastry-lineal-color-kiranshastry.png'), pointer;
+  font-family: Comic Sans MS, Comic Sans;
 }
 
 :root {
-    --gradient: linear-gradient(45deg,
-            #845ec2,
-            #d65db1,
-            #ff9671,
-            #ffc75f,
-            #ff33ff,
-            #f9f871);
-    --gradientgame: linear-gradient(135deg,
-            #843bfa,
-            #58e6ff,
-            #ffc75f,
-            #39ff39,
-            #f9f871,
-            #f94aff);
+  --gradient: linear-gradient(
+    45deg,
+    #845ec2,
+    #d65db1,
+    #ff9671,
+    #ffc75f,
+    #ff33ff,
+    #f9f871
+  );
+  --gradientgame: linear-gradient(
+    135deg,
+    #843bfa,
+    #58e6ff,
+    #ffc75f,
+    #39ff39,
+    #f9f871,
+    #f94aff
+  );
 }
 
-
 .gradientoverlay {
-    /* ackground-image: linear-gradient(to bottom right, #a32aea, #23d3fe, #44dafe); */
-    /* background-image: var(--gradientgame); */
-    background: rgb(63, 105, 251);
-    background: linear-gradient(45deg, rgba(63, 105, 251, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  /* ackground-image: linear-gradient(to bottom right, #a32aea, #23d3fe, #44dafe); */
+  /* background-image: var(--gradientgame); */
+  background: rgb(63, 105, 251);
+  background: linear-gradient(
+    45deg,
+    rgba(63, 105, 251, 1) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
 
-    /* animation: bg-animation 25s infinite alternate; */
-    cursor: url('http://anuary.com/dev/hp/pad3/public/images/hand-cursor.png'), pointer;
+  /* animation: bg-animation 25s infinite alternate; */
+  cursor: url("http://anuary.com/dev/hp/pad3/public/images/hand-cursor.png"),
+    pointer;
 }
 
 .wingradientoverlay {
-    background-image: linear-gradient(to bottom right, #2fff2f, #c8ffc8, #ffffff);
+  background-image: linear-gradient(to bottom right, #2fff2f, #c8ffc8, #ffffff);
 }
 
 .lossgradientoverlay {
-    background-image: linear-gradient(to bottom right, #ff2f2f, #ffc8c8, #ffffff);
+  background-image: linear-gradient(to bottom right, #ff2f2f, #ffc8c8, #ffffff);
 }
 
 .drawgradientoverlay {
-    background-image: linear-gradient(to bottom right, #eaff2f, #feffc8, #ffffff);
+  background-image: linear-gradient(to bottom right, #eaff2f, #feffc8, #ffffff);
 }
 
 body {
-    background: rgb(251, 246, 63);
-    background: linear-gradient(45deg, rgba(251, 246, 63, 1) 0%, rgba(161, 253, 247, 1) 51%, rgba(255, 255, 255, 1) 100%);
-    /* background-size: 400%; */
-    /* background-image: var(--gradient);
+  font-family: "Josefin Sans", sans-serif;
+
+  cursor: url("images/cartoon_cursor.png"), auto !important;
+  /* background: rgb(251, 246, 63); */
+  /* background: linear-gradient(45deg, rgba(251, 246, 63, 1) 0%, rgba(161, 253, 247, 1) 51%, rgba(255, 255, 255, 1) 100%); */
+
+  /* background-size: 400%; */
+  /* background-image: var(--gradient);
     background-size: 400%; */
-    /* animation: bg-animation 15s infinite alternate; */
+  /* animation: bg-animation 15s infinite alternate; */
 }
 
 @keyframes bg-animation {
-    0% {
-        background-position: left;
-    }
+  0% {
+    background-position: left;
+  }
 
-    100% {
-        background-position: right;
-    }
+  100% {
+    background-position: right;
+  }
 }
 
 .mystroke {
-    -webkit-text-stroke: 1px rgb(119, 119, 119);
-    /* -webkit-text-fill-color: white; */
+  -webkit-text-stroke: 1px rgb(119, 119, 119);
+  /* -webkit-text-fill-color: white; */
+}
+
+.custom-cursor {
+  /* cursor: pointer; */
+  cursor: url("images/cartoon_cursor.png") !important;
+}
+
+.font-gamer {
+  font-family: "Press Start 2P", cursive;
+}
+
+* {
+  transition: background-color;
 }
