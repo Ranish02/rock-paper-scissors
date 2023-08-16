@@ -34,7 +34,7 @@ const testUsers = [
   },
 ];
 
-const UserList = ({ userList, setUserList, gameState }) => {
+const UserList = ({ userList, setUserList, gameState, myPlayerNumber }) => {
   //   setUserList(testUsers);
   //   console.log(userList);
   return (
@@ -59,7 +59,9 @@ const UserList = ({ userList, setUserList, gameState }) => {
                     : "w-0"
                 }`}></span>
               <span className="z-20 sticky flex justify-center gap-2">
-                {userList[0]?.username} <FaCrown />
+                {userList[0]?.username}{" "}
+                {myPlayerNumber === 1 ? <FaCrown /> : null}
+                {/* {userList[0]?.username === username ? <FaCrown /> : null} */}
               </span>
             </div>
 
@@ -74,8 +76,11 @@ const UserList = ({ userList, setUserList, gameState }) => {
                     ? "w-full"
                     : "w-0"
                 }`}></span>
-              <span className="z-20 sticky">
+              <span className="z-20 sticky flex justify-center gap-2">
                 {userList.length >= 2 ? userList[1]?.username : "WAITING"}
+
+                {myPlayerNumber === 2 ? <FaCrown /> : null}
+                {/* {userList[1]?.username === username ? <FaCrown /> : null} */}
               </span>
             </div>
           </Fragment>

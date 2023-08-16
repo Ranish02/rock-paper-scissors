@@ -1,6 +1,6 @@
 import React from "react";
 
-const ScoreBoard = ({ score, counter }) => {
+const ScoreBoard = ({ score, counter, currentInput }) => {
   //   const counterr = 9 * 10;
   const w = `${counter * 10}%`;
   return (
@@ -26,7 +26,8 @@ const ScoreBoard = ({ score, counter }) => {
               height: "25px",
             }}></span>
           <span className="absolute bottom-0 left-50">{counter}</span>
-          {counter < 4 ? (
+
+          {counter < 4 && currentInput === 0 ? (
             <span className="absolute bottom-[-25px] left-50 ">
               HURRY!! Select One
             </span>

@@ -6,19 +6,34 @@ import ScoreBoard from "../ui/scoreboard";
 import JoinRoom from "../screens/joinroom";
 import Settings from "../ui/cards/settings";
 import { IoMdSettings } from "react-icons/io";
-const testdata = {
-  score: {
-    wins: 0,
-    loss: 2,
-    draw: 1,
-  },
-  users: ["Rnaish", "UserGamers2123"],
-};
+
 const Homepage = ({ socket }) => {
-  const [gameState, setGameState] = useState("join");
+  const [gameState, setGameState] = useState("join"); // join || waiting || gameplay
   const [gametimer, setGameTimer] = useState(10);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const [username, setUsername] = useState("Player");
+  const [roomId, setRoomId] = useState("global");
+  const [userList, setUserList] = useState([]);
+  const [winStatus, setWinStatus] = useState("");
+  const [ready, setReady] = useState(false);
+
+  const [Round, setRound] = useState(0);
+  const [myPlayerNumber, setMyPlayerNumber] = useState(1);
+  const [counter, setcounter] = useState();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setWinStatus("");
+    }, 1000);
+  }, [winStatus]);
+
+  const [score, setScore] = useState({
+    wins: 0,
+    loss: 0,
+    draw: 0,
+  });
 
   useEffect(() => {
     console.log("Socket updated");
@@ -46,11 +61,47 @@ const Homepage = ({ socket }) => {
       if (data === "game-start") {
         handleGameStart();
       }
+      // alert(data[1]);
     });
 
     socket.on("getAllUsers", (data) => {
       alert("data");
-      setDebugData(data);
+      // setDebugData(data);
+    });
+    socket.on("winnerDecided", (data) => {
+      setRound(Round + 1);
+      setErrorMsg(data.winner + ":" + myPlayerNumber);
+      if (data.winner === 0) {
+        // setErrorMsg();
+        setWinStatus("draw");
+        setScore({ ...score, draw: score.draw + 1 });
+      } else {
+        if (myPlayerNumber === data.winner) {
+          setWinStatus("win");
+          setScore({ ...score, wins: score.wins + 1 });
+          // todo
+        } else {
+          setWinStatus("loss");
+          setScore({ ...score, loss: score.loss + 1 });
+        }
+
+        // setErrorMsg("something went wrong");
+      }
+
+      // setDebugData(data);
+    });
+
+    socket.on("updatedGameStatus", (data) => {
+      if (data.cmd === "start-round") {
+        setTimeout(() => {
+          startTimer(data.time);
+        }, 1000);
+        setCurrentInput(0);
+      }
+    });
+    socket.on("opponentDisconnected", (data) => {
+      setGameState("join");
+      resetPoints();
     });
 
     //one by one--------------------------------------------------
@@ -59,15 +110,28 @@ const Homepage = ({ socket }) => {
     socket.on("updateUsersList", (users) => {
       console.log(users);
       setUserList(users);
+
+      // setDebugData(users);
+      // userList.map(())
+      users.map((user) => {
+        if (user.username === username) {
+          setMyPlayerNumber(user.playerNumber);
+        }
+        return null;
+      });
+      // console.log("test  my user name " + username);
+      // if (users[0].username == username) {
+      //   alert("i am first player");
+      // }
       // setErrorMsg(users[0]);
     });
-  }, [socket]);
+  }, [socket, username, score, myPlayerNumber]);
 
-  const startTimer = () => {
-    setErrorMsg("Game Started ! Starting timer");
-    setcounter(10);
+  const startTimer = (time) => {
+    // setErrorMsg("Game Started ! Starting timer");
+    setcounter(time || 10);
   };
-  const [counter, setcounter] = useState();
+
   useEffect(() => {
     const timer =
       counter > 0 && setInterval(() => setcounter(counter - 1), 1000);
@@ -77,13 +141,6 @@ const Homepage = ({ socket }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const [debugData, setDebugData] = useState();
-  useEffect(() => {
-    if (errorMsg !== "") {
-      setTimeout(() => {
-        setErrorMsg("");
-      }, 3000);
-    }
-  }, [errorMsg]);
 
   const joinRoom = () => {
     setErrorMsg("Joining Room");
@@ -98,9 +155,15 @@ const Homepage = ({ socket }) => {
 
     console.log(userdata);
   };
-  const [username, setUsername] = useState("Test");
-  const [roomId, setRoomId] = useState("global");
-  const [userList, setUserList] = useState([]);
+  const resetPoints = () => {
+    setRound(0);
+    setScore({
+      wins: 0,
+      loss: 0,
+      draw: 0,
+    });
+  };
+
   const props = {
     username,
     setUsername,
@@ -109,8 +172,10 @@ const Homepage = ({ socket }) => {
     joinRoom,
   };
   const handleGameStart = () => {
+    if (gameState !== "gameplay") {
+      setGameState("gameplay");
+    }
     startTimer();
-    setGameState("gameplay");
   };
 
   const handleTest = () => {
@@ -119,25 +184,26 @@ const Homepage = ({ socket }) => {
     //   setDebugData(data);
     // });
   };
-  const handleReady = () => {
+  const toggleReady = () => {
     try {
-      socket.emit("readyplayer");
+      if (!ready) {
+        setReady(!ready);
+        socket.emit("readyplayer");
+      } else {
+        setReady(!ready);
+        socket.emit("unreadyplayer");
+      }
     } catch (error) {
       setErrorMsg("Something went Wrong");
     }
   };
-  const handleunReady = () => {
-    try {
-      socket.emit("unreadyplayer");
-    } catch (error) {
-      setErrorMsg("Something went Wrong");
-    }
-  };
+
   const handleLeave = () => {
     try {
       setGameState("join");
       setUserList([]);
       socket.emit("leave");
+      resetPoints();
     } catch (error) {
       setErrorMsg("Something went Wrong");
     }
@@ -145,12 +211,12 @@ const Homepage = ({ socket }) => {
   const [currentInput, setCurrentInput] = useState(0);
   const handleSendInput = (userinput) => {
     try {
-      if (currentInput === 0) {
-        console.log(userinput);
-        setCurrentInput(userinput);
-        setErrorMsg(userinput);
-        socket.emit("send_input", userinput);
-      }
+      // if (currentInput === 0) {
+      console.log(userinput);
+      setCurrentInput(userinput);
+      // setErrorMsg(userinput);
+      socket.emit("giveInput", userinput);
+      // }
     } catch (error) {
       setErrorMsg("Something Went Wrong");
     }
@@ -160,16 +226,18 @@ const Homepage = ({ socket }) => {
       <pre>{JSON.stringify(debugData, null, "\t")}</pre>
 
       <div
-        className="h-full mt-auto flex flex-col gap-y-8 md:gap-y-12 border border-black px-0 md:px-6 pt-12 rounded-lg pb-6 min-w-[440px] relative"
+        className="h-full mt-auto flex flex-col gap-y-8 md:gap-y-12 border border-black px-0 md:px-6 pt-12 rounded-lg pb-6 min-w-[440px] relative bg-[#42ffa7]"
         // data-aos="zoom-in"
       >
-        {errorMsg !== "" && (
-          <div className="text-right text-red-500 absolute top-4 right-4">
+        {/* {errorMsg !== "" && (
+          <div className="text-right text-red-500 absolute top-4 left-4">
             {errorMsg}
           </div>
-        )}
+        )} */}
 
-        {gameState === "gameplay" && userList[0]?.username === username ? (
+        {gameState !== "gameplay" &&
+        userList[0]?.username === username &&
+        false ? (
           <div className="text-right text-black absolute top-4 right-4">
             <IoMdSettings
               onClick={() => setSettingsOpen(!settingsOpen)}
@@ -190,20 +258,23 @@ const Homepage = ({ socket }) => {
         ) : gameState === "waiting" ? (
           <>
             <button
-              className=" bg-green-500 w-full rounded-md text-white p-4"
-              onClick={handleReady}>
-              Ready
-            </button>
-            <button
-              className=" bg-red-500 w-full rounded-md text-white p-4"
-              onClick={handleunReady}>
-              UnReady
+              className={`${
+                ready ? "bg-green-500" : "bg-red-500"
+              }  w-full rounded-md text-white p-4`}
+              onClick={toggleReady}
+              autoFocus>
+              {ready ? "Ready" : "Not Ready"}
             </button>
           </>
         ) : gameState === "gameplay" ? (
           <>
-            <ScoreBoard score={testdata.score} counter={counter} />
+            <ScoreBoard
+              score={score}
+              counter={counter}
+              currentInput={currentInput}
+            />
             <GameFight
+              winStatus={winStatus}
               handleSendInput={handleSendInput}
               currentInput={currentInput}
             />
@@ -214,23 +285,28 @@ const Homepage = ({ socket }) => {
             userList={userList}
             setUserList={setUserList}
             gameState={gameState}
+            username={username}
+            myPlayerNumber={myPlayerNumber}
           />
         ) : null}
+
         {/* <GameScreen /> */}
-        <div className="flex justify-end">
-          <button
-            className="p-2 bg-red-500 w-24 rounded-md text-white"
-            onClick={handleLeave}>
-            Leave
-          </button>
-        </div>
-        <div className="flex justify-end">
+        {gameState === "waiting" || gameState === "gameplay" ? (
+          <div className="flex justify-end">
+            <button
+              className="p-2 bg-red-500 w-24 rounded-md text-white"
+              onClick={handleLeave}>
+              Leave
+            </button>
+          </div>
+        ) : null}
+        {/* <div className="flex justify-end">
           <button
             className="p-2 bg-purple-500 w-24 rounded-md text-white"
             onClick={handleTest}>
             Test Button
           </button>
-        </div>
+        </div> */}
       </div>
     </main>
   );

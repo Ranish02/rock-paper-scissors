@@ -16,6 +16,7 @@ const UsernamePage = ({
           className="p-4 rounded-lg"
           placeholder="Enter username"
           value={username}
+          autoFocus
           onChange={(event) => {
             setUsername(event.target.value);
           }}
