@@ -9,7 +9,7 @@ import io from "socket.io-client";
 import Homepage from "./components/home";
 import Footer from "./components/shared-elements/footer";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 // import AnotherAnim from "./components/AnotherAnim";
 
 // import Game from "./Game";
@@ -19,8 +19,8 @@ import "aos/dist/aos.css";
 
 function App() {
   const apiUrl = process.env.SOCKET_IO_URL;
-  // const socket = io.connect("https://rps-server-2-0.onrender.com/");
-  const socket = io.connect("http://localhost:3002/");
+  const socket = io.connect("https://rps-server-2-0.onrender.com/");
+  // const socket = io.connect("http://localhost:3002/");
   useEffect(() => {
     AOS.init();
   }, []);
@@ -28,7 +28,7 @@ function App() {
   // const [isivisible, setIsVisible] = useState(false);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/rock-paper-scissors">
       <Routes>
         <Route
           exact

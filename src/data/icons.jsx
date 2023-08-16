@@ -10,8 +10,15 @@ import {
   FaRegHandRock,
   FaRegHandScissors,
 } from "react-icons/fa";
+import { CgWebsite } from "react-icons/cg";
 
 export const footerIcons = [
+  {
+    id: 0,
+    label: "Website",
+    link: "https://www.ranishkunwar.com.np/",
+    icon: <CgWebsite />,
+  },
   {
     id: 1,
     label: "Facebook",

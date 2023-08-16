@@ -11,7 +11,7 @@ const Footer = () => {
         <ul className="flex mt-auto">
           {footerIcons.map((icon) => (
             <li key={`footericon contact ${icon.id}`}>
-              <a href={icon.link}>
+              <a href={icon.link} target="_blank" rel="noopener noreferrer">
                 {React.cloneElement(icon.icon, {
                   size: 25,
                   className: "mx-2",
